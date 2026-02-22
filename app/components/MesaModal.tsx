@@ -6,10 +6,16 @@ import { Mesa } from "./MesaCard";
 interface MesaModalProps {
   mesa: Mesa;
   onClose: () => void;
-  onDelete: (id: number) => void; // 👈 NUEVA PROP
+  onDelete: (id: number) => void;
+  onEdit: () => void;
 }
 
-export default function MesaModal({ mesa, onClose, onDelete }: MesaModalProps) {
+export default function MesaModal({
+  mesa,
+  onClose,
+  onDelete,
+  onEdit,
+}: MesaModalProps) {
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
@@ -35,20 +41,26 @@ export default function MesaModal({ mesa, onClose, onDelete }: MesaModalProps) {
           </ul>
         )}
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
-          <button
-            onClick={onClose}
-            style={buttonStyle}
-          >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "20px",
+          }}
+        >
+          <button onClick={onClose} style={buttonStyle}>
             Cerrar
           </button>
 
-          {/* 🔴 BOTÓN ELIMINAR */}
+          <button onClick={onEdit} style={editButtonStyle}>
+            Editar
+          </button>
+
           <button
             onClick={() => onDelete(mesa.id)}
             style={deleteButtonStyle}
           >
-            Eliminar mesa
+            Eliminar
           </button>
         </div>
       </div>
@@ -82,6 +94,15 @@ const buttonStyle: React.CSSProperties = {
   border: "none",
   borderRadius: "6px",
   backgroundColor: "#3498db",
+  color: "white",
+  cursor: "pointer",
+};
+
+const editButtonStyle: React.CSSProperties = {
+  padding: "10px",
+  border: "none",
+  borderRadius: "6px",
+  backgroundColor: "#f39c12",
   color: "white",
   cursor: "pointer",
 };

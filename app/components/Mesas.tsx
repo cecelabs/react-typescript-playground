@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import MesaCard, { Mesa } from "@/app/components/MesaCard";
 import MesaModal from "@/app/components/MesaModal";
 import NuevaMesaModal from "@/app/components/NuevaMesaModal";
+import EditarMesaModal from "@/app/components/EditarMesaModal";
 
 export default function MesasPage() {
   const [mesaSeleccionada, setMesaSeleccionada] = useState<Mesa | null>(null);
   const [mostrarModalNuevaMesa, setMostrarModalNuevaMesa] = useState(false);
+  const [mostrarEditar, setMostrarEditar] = useState(false);
 
   const [mesas, setMesas] = useState<Mesa[]>([
     {
@@ -31,26 +33,31 @@ export default function MesasPage() {
     },
   ]);
 
-  // ✅ Guardar nueva mesa
   const guardarNuevaMesa = (mesa: Mesa) => {
     setMesas([...mesas, mesa]);
   };
 
-  // ✅ Eliminar mesa con confirmación
   const eliminarMesa = (id: number) => {
     const confirmacion = window.confirm(
       "¿Estás seguro que deseas eliminar esta mesa?"
     );
-
     if (!confirmacion) return;
 
     setMesas(mesas.filter((mesa) => mesa.id !== id));
     setMesaSeleccionada(null);
   };
 
+  const actualizarMesa = (mesaActualizada: Mesa) => {
+    setMesas(
+      mesas.map((m) =>
+        m.id === mesaActualizada.id ? mesaActualizada : m
+      )
+    );
+    setMesaSeleccionada(mesaActualizada);
+  };
+
   return (
     <div style={{ padding: "30px" }}>
-      {/* Encabezado */}
       <div
         style={{
           display: "flex",
@@ -77,7 +84,6 @@ export default function MesasPage() {
         </button>
       </div>
 
-      {/* Grid de mesas */}
       <div
         style={{
           display: "grid",
@@ -94,21 +100,28 @@ export default function MesasPage() {
         ))}
       </div>
 
-      {/* Modal detalle mesa */}
       {mesaSeleccionada && (
         <MesaModal
           mesa={mesaSeleccionada}
           onClose={() => setMesaSeleccionada(null)}
           onDelete={eliminarMesa}
+          onEdit={() => setMostrarEditar(true)}
         />
       )}
 
-      {/* Modal nueva mesa */}
       {mostrarModalNuevaMesa && (
         <NuevaMesaModal
           onClose={() => setMostrarModalNuevaMesa(false)}
           onSave={guardarNuevaMesa}
           siguienteNumero={mesas.length + 1}
+        />
+      )}
+
+      {mostrarEditar && mesaSeleccionada && (
+        <EditarMesaModal
+          mesa={mesaSeleccionada}
+          onClose={() => setMostrarEditar(false)}
+          onSave={actualizarMesa}
         />
       )}
     </div>

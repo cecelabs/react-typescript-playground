@@ -2,11 +2,19 @@
 
 import React from "react";
 
+export const ESTADOS_ORDEN = {
+  PENDIENTE: "pendiente",
+  PREPARACION: "preparacion",
+  ENTREGADO: "entregado",
+} as const;
+
+export type EstadoOrden = typeof ESTADOS_ORDEN[keyof typeof ESTADOS_ORDEN];
+
 export interface Orden {
   id: number;
   plato: string;
   cantidad: number;
-  estado: "pendiente" | "preparacion" | "entregado";
+  estado: EstadoOrden;
 }
 
 export interface Mesa {
