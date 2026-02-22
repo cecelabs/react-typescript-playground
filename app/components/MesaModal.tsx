@@ -6,43 +6,13 @@ import { Mesa } from "./MesaCard";
 interface MesaModalProps {
   mesa: Mesa;
   onClose: () => void;
+  onDelete: (id: number) => void; // 👈 NUEVA PROP
 }
 
-export default function MesaModal({ mesa, onClose }: MesaModalProps) {
-  const styles = {
-    overlay: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0,0,0,0.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    } as React.CSSProperties,
-    modal: {
-      backgroundColor: "#fff",
-      padding: "30px",
-      borderRadius: "12px",
-      width: "400px",
-      maxHeight: "80vh",
-      overflowY: "auto",
-    } as React.CSSProperties,
-    button: {
-      marginTop: "15px",
-      padding: "10px",
-      border: "none",
-      borderRadius: "6px",
-      backgroundColor: "#3498db",
-      color: "white",
-      cursor: "pointer",
-    } as React.CSSProperties,
-  };
-
+export default function MesaModal({ mesa, onClose, onDelete }: MesaModalProps) {
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
+    <div style={overlayStyle}>
+      <div style={modalStyle}>
         <h2>Mesa #{mesa.numero}</h2>
         <p><strong>Mesero:</strong> {mesa.mesero}</p>
         <p><strong>Personas:</strong> {mesa.cantidadPersonas}</p>
@@ -65,10 +35,62 @@ export default function MesaModal({ mesa, onClose }: MesaModalProps) {
           </ul>
         )}
 
-        <button style={styles.button} onClick={onClose}>
-          Cerrar
-        </button>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+          <button
+            onClick={onClose}
+            style={buttonStyle}
+          >
+            Cerrar
+          </button>
+
+          {/* 🔴 BOTÓN ELIMINAR */}
+          <button
+            onClick={() => onDelete(mesa.id)}
+            style={deleteButtonStyle}
+          >
+            Eliminar mesa
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
+const overlayStyle: React.CSSProperties = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0,0,0,0.5)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+const modalStyle: React.CSSProperties = {
+  backgroundColor: "#fff",
+  padding: "30px",
+  borderRadius: "12px",
+  width: "400px",
+  maxHeight: "80vh",
+  overflowY: "auto",
+};
+
+const buttonStyle: React.CSSProperties = {
+  padding: "10px",
+  border: "none",
+  borderRadius: "6px",
+  backgroundColor: "#3498db",
+  color: "white",
+  cursor: "pointer",
+};
+
+const deleteButtonStyle: React.CSSProperties = {
+  padding: "10px",
+  border: "none",
+  borderRadius: "6px",
+  backgroundColor: "#e74c3c",
+  color: "white",
+  cursor: "pointer",
+};
