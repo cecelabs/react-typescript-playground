@@ -32,11 +32,27 @@ const PanelMenu = ({activeComponent, setActiveComponent}) => {
                 />
 
                 <MenuButton
-                    label="Panel de mesas"
+                    label="Panel gestión salón"
                     value="D"
                     activeComponent={activeComponent}
                     setActiveComponent={setActiveComponent}
                     activeColor="bg-pink-600"
+                />
+
+                <MenuButton
+                    label="Panel meser@s"
+                    value="E"
+                    activeComponent={activeComponent}
+                    setActiveComponent={setActiveComponent}
+                    activeColor="bg-orange-600"
+                />
+
+                <MenuButton
+                    label="Panel cocina/ordenes"
+                    value="F"
+                    activeComponent={activeComponent}
+                    setActiveComponent={setActiveComponent}
+                    activeColor="bg-yellow-600"
                 />
             </div>
             <hr className="my-6 border-gray-700"/>

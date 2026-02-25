@@ -5,33 +5,13 @@ import MesaCard, { Mesa } from "@/app/components/MesaCard";
 import MesaModal from "@/app/components/MesaModal";
 import NuevaMesaModal from "@/app/components/NuevaMesaModal";
 import EditarMesaModal from "@/app/components/EditarMesaModal";
+import {useMesas} from "@/src/common/application/mesas-store";
 
 export default function MesasPage() {
   const [mesaSeleccionada, setMesaSeleccionada] = useState<Mesa | null>(null);
-  const [mostrarModalNuevaMesa, setMostrarModalNuevaMesa] = useState(false);
-  const [mostrarEditar, setMostrarEditar] = useState(false);
-
-  const [mesas, setMesas] = useState<Mesa[]>([
-    {
-      id: 1,
-      numero: 1,
-      mesero: "Carlos",
-      disponible: false,
-      cantidadPersonas: 4,
-      ordenes: [
-        { id: 1, plato: "Pizza", cantidad: 2, estado: "preparacion" },
-        { id: 2, plato: "Refresco", cantidad: 4, estado: "entregado" },
-      ],
-    },
-    {
-      id: 2,
-      numero: 2,
-      mesero: "Ana",
-      disponible: true,
-      cantidadPersonas: 0,
-      ordenes: [],
-    },
-  ]);
+  const [mostrarModalNuevaMesa, setMostrarModalNuevaMesa] = useState<boolean>(false);
+  const [mostrarEditar, setMostrarEditar] = useState<boolean>(false);
+  const {numeroMesas,setNumeroMesas, mesas, setMesas}= useMesas();
 
   const guardarNuevaMesa = (mesa: Mesa) => {
     setMesas([...mesas, mesa]);
@@ -45,6 +25,7 @@ export default function MesasPage() {
 
     setMesas(mesas.filter((mesa) => mesa.id !== id));
     setMesaSeleccionada(null);
+    setNumeroMesas(numeroMesas+1);
   };
 
   const actualizarMesa = (mesaActualizada: Mesa) => {
@@ -83,7 +64,9 @@ export default function MesasPage() {
           + Añadir Mesa
         </button>
       </div>
-
+      <div>
+          {numeroMesas}
+      </div>
       <div
         style={{
           display: "grid",

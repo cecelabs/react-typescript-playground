@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Mesa } from "./MesaCard";
+import {Mesa} from "@/src/common/domain/entities";
 
 interface MesaModalProps {
   mesa: Mesa;

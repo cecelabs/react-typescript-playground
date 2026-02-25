@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mesa, Orden } from "./MesaCard";
+import {Mesa, Orden} from "@/src/common/domain/entities";
 
 interface EditarMesaModalProps {
   mesa: Mesa;

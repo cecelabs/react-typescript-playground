@@ -9,7 +9,7 @@ interface NuevaMesaModalProps {
   siguienteNumero: number;
 }
 
-export default function NuevaMesaModal({
+export default function OrdenModal({
   onClose,
   onSave,
   siguienteNumero,

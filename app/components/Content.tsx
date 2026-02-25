@@ -2,6 +2,8 @@ import React from "react";
 import CarruselImagenes from '@/app/components/Carousel';
 import FormularioContactoPage from "@/app/components/Formulario";
 import MesasPage from "@/app/components/Mesas";
+import CocinaPage from "@/app/components/Cocina"
+import OrdenesPage from "@/app/components/Ordenes"
 
 const ComponentA = () => (
   <div className="p-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-xl mb-4">
@@ -35,6 +37,12 @@ const ActiveComponent = ({ activeComponent }) => {
             break;
         case 'D':
             ComponenteMostrar = <MesasPage/>;
+            break;
+        case 'E':
+            ComponenteMostrar = <OrdenesPage/>;
+            break;
+        case 'F':
+            ComponenteMostrar = <CocinaPage/>;
             break;
         default:
             ComponenteMostrar = <ComponentA/>;
