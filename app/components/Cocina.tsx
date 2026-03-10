@@ -85,6 +85,8 @@ export default function CocinaPage() {
                     onClose={() => setMesaSeleccionada(null)}
                     onDelete={eliminarMesa}
                     onEdit={() => setMostrarEditar(true)}
+                    showMesero={false}
+                    showDelete={false}
                 />
             )}
 
@@ -93,6 +95,9 @@ export default function CocinaPage() {
                     onClose={() => setMostrarModalNuevaMesa(false)}
                     onSave={(mesa: Mesa) => setMesas([...mesas, mesa])}
                     siguienteNumero={mesas.length + 1}
+                    showMesero={false}
+                    showCantidadPersonas={false}
+
                 />
             )}
 

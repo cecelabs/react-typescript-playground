@@ -1,17 +1,23 @@
 "use client";
 
 import React, {useState} from "react";
-import MesaCard, {Mesa} from "@/app/components/MesaCard";
+import MesaCard from "@/app/components/MesaCard";
 import MesaModal from "@/app/components/MesaModal";
-import OrdenModal from "@/app/components/OrdenesModal"; // ⬅️ antes NuevaMesaModal
+import OrdenModal from "@/app/components/OrdenesModal";
 import EditarMesaModal from "@/app/components/EditarMesaModal";
 import {useMesas} from "@/src/common/application/mesas-store";
+import {Mesa} from "@/src/common/domain/entities";
+import NuevaMesaModal from "@/app/components/NuevaMesaModal";
 
 export default function OrdenesPage() {
     const [mesaSeleccionada, setMesaSeleccionada] = useState<Mesa | null>(null);
-    const [mostrarOrdenModal, setMostrarOrdenModal] = useState<boolean>(false); // ⬅️ antes mostrarModalNuevaMesa
+    const [mostrarModalNuevaMesa, setMostrarModalNuevaMesa] = useState<boolean>(false); // ⬅️ antes mostrarModalNuevaMesa
     const [mostrarEditar, setMostrarEditar] = useState<boolean>(false);
     const {numeroMesas, setNumeroMesas, mesas, setMesas} = useMesas();
+
+    const guardarNuevaMesa = (mesa: Mesa) => {
+        setMesas([...mesas, mesa]);
+    };
 
 
     const eliminarMesa = (id: number) => {
@@ -22,7 +28,7 @@ export default function OrdenesPage() {
 
         setMesas(mesas.filter((mesa) => mesa.id !== id));
         setMesaSeleccionada(null);
-        setNumeroMesas(numeroMesas+2);
+        setNumeroMesas(numeroMesas + 2);
     };
 
     const actualizarMesa = (mesaActualizada: Mesa) => {
@@ -60,13 +66,18 @@ export default function OrdenesPage() {
                     onClose={() => setMesaSeleccionada(null)}
                     onDelete={eliminarMesa}
                     onEdit={() => setMostrarEditar(true)}
+                    showMesero={false}
+
                 />
             )}
 
-            {/* ⬇️ Aquí ahora usamos OrdenModal */}
-            {mostrarOrdenModal && (
-                <OrdenModal
-                    onClose={() => setMostrarOrdenModal(false)}
+            {mostrarModalNuevaMesa && (
+                <NuevaMesaModal
+                    onClose={() => setMostrarModalNuevaMesa(false)}
+                    onSave={guardarNuevaMesa}
+                    siguienteNumero={mesas.length + 1}
+                    showMesero={false}
+                    showCantidadPersonas
                 />
             )}
 

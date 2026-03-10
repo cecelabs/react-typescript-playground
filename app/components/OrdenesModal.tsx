@@ -1,25 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
-import {Mesa} from "@/src/common/domain/entities";
+import { Mesa } from "@/src/common/domain/entities";
 
 interface NuevaMesaModalProps {
   onClose: () => void;
   onSave: (mesa: Mesa) => void;
   siguienteNumero: number;
+
+  showMesero?: boolean;
+  showCantidadPersonas?: boolean;
+  showGuardar?: boolean;
 }
 
 export default function OrdenModal({
   onClose,
   onSave,
   siguienteNumero,
+  showMesero = true,
+  showCantidadPersonas = true,
+  showGuardar = true,
 }: NuevaMesaModalProps) {
   const [mesero, setMesero] = useState<string>("");
   const [cantidadPersonas, setCantidadPersonas] = useState<number>(0);
 
   const handleGuardar = () => {
     const nuevaMesa: Mesa = {
-      id: Date.now(), // id único
+      id: Date.now(),
       numero: siguienteNumero,
       mesero: mesero || "Sin asignar",
       disponible: cantidadPersonas === 0,
@@ -36,33 +43,42 @@ export default function OrdenModal({
       <div style={modalStyle}>
         <h2>Nueva Mesa #{siguienteNumero}</h2>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>Mesero:</label>
-          <input
-            type="text"
-            value={mesero}
-            onChange={(e) => setMesero(e.target.value)}
-            style={inputStyle}
-          />
-        </div>
+        {showMesero && (
+          <div style={{ marginBottom: "10px" }}>
+            <label>Mesero:</label>
+            <input
+              type="text"
+              value={mesero}
+              onChange={(e) => setMesero(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+        )}
 
-        <div style={{ marginBottom: "10px" }}>
-          <label>Cantidad de Personas:</label>
-          <input
-            type="number"
-            value={cantidadPersonas}
-            onChange={(e) => setCantidadPersonas(Number(e.target.value))}
-            style={inputStyle}
-          />
-        </div>
+        {showCantidadPersonas && (
+          <div style={{ marginBottom: "10px" }}>
+            <label>Cantidad de Personas:</label>
+            <input
+              type="number"
+              value={cantidadPersonas}
+              onChange={(e) =>
+                setCantidadPersonas(Number(e.target.value))
+              }
+              style={inputStyle}
+            />
+          </div>
+        )}
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <button style={buttonStyle} onClick={onClose}>
             Cancelar
           </button>
-          <button style={saveButtonStyle} onClick={handleGuardar}>
-            Guardar
-          </button>
+
+          {showGuardar && (
+            <button style={saveButtonStyle} onClick={handleGuardar}>
+              Guardar
+            </button>
+          )}
         </div>
       </div>
     </div>

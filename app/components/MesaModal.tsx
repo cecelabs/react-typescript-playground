@@ -1,13 +1,18 @@
 "use client";
 
 import React from "react";
-import {Mesa} from "@/src/common/domain/entities";
+import { Mesa } from "@/src/common/domain/entities";
 
 interface MesaModalProps {
   mesa: Mesa;
   onClose: () => void;
   onDelete: (id: number) => void;
-  onEdit: () => void;
+  onEdit?: () => void;
+
+  showMesero?: boolean;
+  showOrdenes?: boolean;
+  showEdit?: boolean;
+  showDelete?: boolean;
 }
 
 export default function MesaModal({
@@ -15,30 +20,47 @@ export default function MesaModal({
   onClose,
   onDelete,
   onEdit,
+  showMesero = true,
+  showOrdenes = true,
+  showEdit = true,
+  showDelete = true,
 }: MesaModalProps) {
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <h2>Mesa #{mesa.numero}</h2>
-        <p><strong>Mesero:</strong> {mesa.mesero}</p>
-        <p><strong>Personas:</strong> {mesa.cantidadPersonas}</p>
+
+        {showMesero && (
+          <p>
+            <strong>Mesero:</strong> {mesa.mesero}
+          </p>
+        )}
+
+        <p>
+          <strong>Personas:</strong> {mesa.cantidadPersonas}
+        </p>
+
         <p>
           <strong>Estado:</strong>{" "}
           {mesa.disponible ? "Disponible" : "Ocupada"}
         </p>
 
-        <h3>Órdenes:</h3>
-        {mesa.ordenes.length === 0 ? (
-          <p>No hay órdenes registradas.</p>
-        ) : (
-          <ul>
-            {mesa.ordenes.map((orden) => (
-              <li key={orden.id}>
-                {orden.plato} x{orden.cantidad} -{" "}
-                <strong>{orden.estado}</strong>
-              </li>
-            ))}
-          </ul>
+        {showOrdenes && (
+          <>
+            <h3>Órdenes:</h3>
+            {mesa.ordenes.length === 0 ? (
+              <p>No hay órdenes registradas.</p>
+            ) : (
+              <ul>
+                {mesa.ordenes.map((orden) => (
+                  <li key={orden.id}>
+                    {orden.plato} x{orden.cantidad} -{" "}
+                    <strong>{orden.estado}</strong>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
 
         <div
@@ -52,16 +74,20 @@ export default function MesaModal({
             Cerrar
           </button>
 
-          <button onClick={onEdit} style={editButtonStyle}>
-            Editar
-          </button>
+          {showEdit && onEdit && (
+            <button onClick={onEdit} style={editButtonStyle}>
+              Editar
+            </button>
+          )}
 
-          <button
-            onClick={() => onDelete(mesa.id)}
-            style={deleteButtonStyle}
-          >
-            Eliminar
-          </button>
+          {showDelete && onDelete && (
+            <button
+              onClick={() => onDelete(mesa.id)}
+              style={deleteButtonStyle}
+            >
+              Eliminar
+            </button>
+          )}
         </div>
       </div>
     </div>
