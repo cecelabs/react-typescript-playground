@@ -87,17 +87,26 @@ export default function CocinaPage() {
                     onEdit={() => setMostrarEditar(true)}
                     showMesero={false}
                     showDelete={false}
+
                 />
             )}
 
             {mostrarModalNuevaMesa && (
                 <NuevaMesaModal
+                    mesa={{
+                        id: Date.now(),
+                        numero: mesas.length + 1,
+                        mesero: "",
+                        cantidadPersonas: 0,
+                        disponible: true,
+                        ordenes: []
+                    }}
                     onClose={() => setMostrarModalNuevaMesa(false)}
                     onSave={(mesa: Mesa) => setMesas([...mesas, mesa])}
-                    siguienteNumero={mesas.length + 1}
-                    showMesero={false}
-                    showCantidadPersonas={false}
-
+                    showMesero={true}
+                    showCantidadPersonas
+                    showEstado={true}
+                    showOrdenes={false}
                 />
             )}
 
@@ -106,6 +115,9 @@ export default function CocinaPage() {
                     mesa={mesaSeleccionada}
                     onClose={() => setMostrarEditar(false)}
                     onSave={actualizarMesa}
+                    showMesero={false}
+                    showCantidadPersonas={false}
+                    showEstado={false}
                 />
             )}
         </div>

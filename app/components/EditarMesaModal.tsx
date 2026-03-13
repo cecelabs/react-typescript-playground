@@ -1,104 +1,161 @@
 "use client";
 
-import React, {useState} from "react";
-import {Mesa, Orden} from "@/src/common/domain/entities";
+import React, { useState } from "react";
+import { Mesa, Orden, ESTADOS_ORDEN } from "@/src/common/domain/entities";
 import OrdenCard from "@/app/components/OrdenCard";
 
 interface EditarMesaModalProps {
-    mesa: Mesa;
-    onClose: () => void;
-    onSave: (mesaActualizada: Mesa) => void;
+  mesa: Mesa;
+  onClose: () => void;
+  onSave: (mesaActualizada: Mesa) => void;
+
+  showMesero?: boolean;
+  showCantidadPersonas?: boolean;
+  showEstado?: boolean;
+  showOrdenes?: boolean;
+  showAgregarOrden?: boolean;
+  showGuardar?: boolean;
 }
 
 export default function EditarMesaModal({
-                                            mesa,
-                                            onClose,
-                                            onSave,
-                                        }: EditarMesaModalProps) {
-    const [mesero, setMesero] = useState(mesa.mesero);
-    const [cantidadPersonas, setCantidadPersonas] = useState(mesa.cantidadPersonas);
-    const [disponible, setDisponible] = useState(mesa.disponible);
-    const [ordenes, setOrdenes] = useState<Orden[]>(mesa.ordenes);
+  mesa,
+  onClose,
+  onSave,
 
-    const actualizarOrden = (index: number, campo: keyof Orden, valor: string | number) => {
-        const nuevasOrdenes = [...ordenes];
-        nuevasOrdenes[index] = {...nuevasOrdenes[index], [campo]: valor};
-        setOrdenes(nuevasOrdenes);
+  showMesero = true,
+  showCantidadPersonas = true,
+  showEstado = true,
+  showOrdenes = true,
+  showAgregarOrden = true,
+  showGuardar = true,
+}: EditarMesaModalProps) {
+  const [mesero, setMesero] = useState(mesa.mesero);
+  const [cantidadPersonas, setCantidadPersonas] = useState(mesa.cantidadPersonas);
+  const [disponible, setDisponible] = useState(mesa.disponible);
+  const [ordenes, setOrdenes] = useState<Orden[]>(mesa.ordenes);
+
+  const actualizarOrden = (
+    index: number,
+    campo: keyof Orden,
+    valor: string | number
+  ) => {
+    const nuevasOrdenes = [...ordenes];
+    nuevasOrdenes[index] = { ...nuevasOrdenes[index], [campo]: valor };
+    setOrdenes(nuevasOrdenes);
+  };
+
+  const borrarOrden = (index: number) => {
+    const nuevasOrdenes = [...ordenes];
+    nuevasOrdenes.splice(index, 1);
+    setOrdenes(nuevasOrdenes);
+  };
+
+  const agregarOrden = () => {
+    const nuevaOrden: Orden = {
+      id: Date.now(),
+      plato: "",
+      cantidad: 1,
+      estado: ESTADOS_ORDEN.PENDIENTE,
     };
 
-    const borrarOrden = (index: number) => {
-        const nuevasOrdenes = [...ordenes];
-        nuevasOrdenes.splice(index, 1);
-        setOrdenes(nuevasOrdenes);
+    setOrdenes((prev) => [...prev, nuevaOrden]);
+  };
+
+  const guardarCambios = () => {
+    const mesaActualizada: Mesa = {
+      ...mesa,
+      mesero,
+      cantidadPersonas,
+      disponible,
+      ordenes,
     };
 
-    const agregarOrden = () => {
-        setOrdenes([
-            ...ordenes,
-            {
-                id: Date.now().toString(),
-                plato: "",
-                cantidad: 1,
-                estado: "pendiente",
-            },
-        ]);
-    };
+    onSave(mesaActualizada);
+    onClose();
+  };
 
-    const guardarCambios = () => {
-        const mesaActualizada: Mesa = {...mesa, mesero, cantidadPersonas, disponible, ordenes};
-        onSave(mesaActualizada);
-        onClose();
-    };
+  return (
+    <div style={overlayStyle}>
+      <div style={modalStyle}>
+        <h2>Editar Mesa #{mesa.numero}</h2>
 
-    return (
-        <div style={overlayStyle}>
-            <div style={modalStyle}>
-                <h2>Editar Mesa #{mesa.numero}</h2>
+        {showMesero && (
+          <>
+            <label>Mesero:</label>
+            <input
+              value={mesero}
+              onChange={(e) => setMesero(e.target.value)}
+              style={inputStyle}
+            />
+          </>
+        )}
 
-                <label>Mesero:</label>
-                <input value={mesero} onChange={(e) => setMesero(e.target.value)} style={inputStyle}/>
+        {showCantidadPersonas && (
+          <>
+            <label>Cantidad de Personas:</label>
+            <input
+              type="number"
+              value={cantidadPersonas}
+              onChange={(e) => setCantidadPersonas(Number(e.target.value))}
+              style={inputStyle}
+            />
+          </>
+        )}
 
-                <label>Cantidad de Personas:</label>
-                <input
-                    type="number"
-                    value={cantidadPersonas}
-                    onChange={(e) => setCantidadPersonas(Number(e.target.value))}
-                    style={inputStyle}
-                />
+        {showEstado && (
+          <>
+            <label>Estado:</label>
+            <select
+              value={disponible ? "disponible" : "ocupada"}
+              onChange={(e) => setDisponible(e.target.value === "disponible")}
+              style={inputStyle}
+            >
+              <option value="disponible">Disponible</option>
+              <option value="ocupada">Ocupada</option>
+            </select>
+          </>
+        )}
 
-                <label>Estado:</label>
-                <select
-                    value={disponible ? "disponible" : "ocupada"}
-                    onChange={(e) => setDisponible(e.target.value === "disponible")}
-                    style={inputStyle}
-                >
-                    <option value="disponible">Disponible</option>
-                    <option value="ocupada">Ocupada</option>
-                </select>
+        {showOrdenes && (
+          <>
+            <h3>Órdenes</h3>
 
-                <h3>Órdenes</h3>
-                {ordenes.map((orden, index) => (
-                    <OrdenCard
-                        key={orden.id}
-                        orden={orden}
-                        onActualizar={(campo, valor) => actualizarOrden(index, campo, valor)}
-                        onBorrar={() => borrarOrden(index)}
-                    />
-                ))}
+            {ordenes.map((orden, index) => (
+              <OrdenCard
+                key={orden.id}
+                orden={orden}
+                onActualizar={(campo, valor) =>
+                  actualizarOrden(index, campo, valor)
+                }
+                onBorrar={() => borrarOrden(index)}
+              />
+            ))}
 
-                <button onClick={agregarOrden} style={buttonStyle}>
-                    + Agregar Orden
-                </button>
+            {showAgregarOrden && (
+              <button onClick={agregarOrden} style={buttonStyle}>
+                + Agregar Orden
+              </button>
+            )}
+          </>
+        )}
 
-                <div style={{display: "flex", justifyContent: "space-between", marginTop: "20px"}}>
-                    <button onClick={onClose} style={buttonStyle}>Cancelar</button>
-                    <button onClick={guardarCambios} style={saveButtonStyle}>Guardar Cambios</button>
-                </div>
-            </div>
+        <div
+          style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}
+        >
+          <button onClick={onClose} style={buttonStyle}>
+            Cancelar
+          </button>
+
+          {showGuardar && (
+            <button onClick={guardarCambios} style={saveButtonStyle}>
+              Guardar Cambios
+            </button>
+          )}
         </div>
-    );
+      </div>
+    </div>
+  );
 }
-
 const overlayStyle: React.CSSProperties = {
     position: "fixed",
     top: 0,

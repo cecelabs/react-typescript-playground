@@ -91,19 +91,29 @@ export default function MesasPage() {
                     onDelete={eliminarMesa}
                     onEdit={() => setMostrarEditar(true)}
                     showMesero
-                    showOrdenes
+                    showOrdenes={false}
                     showEdit
                     showDelete
+
                 />
             )}
 
             {mostrarModalNuevaMesa && (
                 <NuevaMesaModal
+                    mesa={{
+                        id: Date.now(),
+                        numero: mesas.length + 1,
+                        mesero: "",
+                        cantidadPersonas: 0,
+                        disponible: true,
+                        ordenes: []
+                    }}
                     onClose={() => setMostrarModalNuevaMesa(false)}
-                    onSave={guardarNuevaMesa}
-                    siguienteNumero={mesas.length + 1}
-                    showMesero
+                    onSave={(mesa: Mesa) => setMesas([...mesas, mesa])}
+                    showMesero={true}
                     showCantidadPersonas
+                    showEstado={true}
+                    showOrdenes={false}
                 />
             )}
 
@@ -112,6 +122,7 @@ export default function MesasPage() {
                     mesa={mesaSeleccionada}
                     onClose={() => setMostrarEditar(false)}
                     onSave={actualizarMesa}
+                    showOrdenes={false}
                 />
             )}
         </div>

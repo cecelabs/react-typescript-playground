@@ -1,82 +1,154 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mesa } from "@/src/common/domain/entities";
+import { Mesa, Orden, ESTADOS_ORDEN } from "@/src/common/domain/entities";
+import OrdenCard from "@/app/components/OrdenCard";
 
-interface NuevaMesaModalProps {
+interface EditarMesaModalProps {
+  mesa: Mesa;
   onClose: () => void;
-  onSave: (mesa: Mesa) => void;
-  siguienteNumero: number;
+  onSave: (mesaActualizada: Mesa) => void;
 
   showMesero?: boolean;
   showCantidadPersonas?: boolean;
+  showEstado?: boolean;
+  showOrdenes?: boolean;
+  showAgregarOrden?: boolean;
   showGuardar?: boolean;
 }
 
-export default function NuevaMesaModal({
+export default function EditarMesaModal({
+  mesa,
   onClose,
   onSave,
-  siguienteNumero,
+
   showMesero = true,
   showCantidadPersonas = true,
+  showEstado = true,
+  showOrdenes = true,
+  showAgregarOrden = true,
   showGuardar = true,
-}: NuevaMesaModalProps) {
-  const [mesero, setMesero] = useState<string>("");
-  const [cantidadPersonas, setCantidadPersonas] = useState<number>(0);
+}: EditarMesaModalProps) {
+  const [mesero, setMesero] = useState(mesa.mesero);
+  const [cantidadPersonas, setCantidadPersonas] = useState(mesa.cantidadPersonas);
+  const [disponible, setDisponible] = useState(mesa.disponible);
+  const [ordenes, setOrdenes] = useState<Orden[]>(mesa.ordenes);
 
-  const handleGuardar = () => {
-    const nuevaMesa: Mesa = {
+  const actualizarOrden = (
+    index: number,
+    campo: keyof Orden,
+    valor: string | number
+  ) => {
+    const nuevasOrdenes = [...ordenes];
+    nuevasOrdenes[index] = { ...nuevasOrdenes[index], [campo]: valor };
+    setOrdenes(nuevasOrdenes);
+  };
+
+  const borrarOrden = (index: number) => {
+    const nuevasOrdenes = [...ordenes];
+    nuevasOrdenes.splice(index, 1);
+    setOrdenes(nuevasOrdenes);
+  };
+
+  const agregarOrden = () => {
+    const nuevaOrden: Orden = {
       id: Date.now(),
-      numero: siguienteNumero,
-      mesero: mesero || "Sin asignar",
-      disponible: cantidadPersonas === 0,
-      cantidadPersonas,
-      ordenes: [],
+      plato: "",
+      cantidad: 1,
+      estado: ESTADOS_ORDEN.PENDIENTE,
     };
 
-    onSave(nuevaMesa);
+    setOrdenes((prev) => [...prev, nuevaOrden]);
+  };
+
+  const guardarCambios = () => {
+    const mesaActualizada: Mesa = {
+      ...mesa,
+      mesero,
+      cantidadPersonas,
+      disponible,
+      ordenes,
+    };
+
+    onSave(mesaActualizada);
     onClose();
   };
 
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
-        <h2>Nueva Mesa #{siguienteNumero}</h2>
+        <h2>Editar Mesa #{mesa.numero}</h2>
 
         {showMesero && (
-          <div style={{ marginBottom: "10px" }}>
+          <>
             <label>Mesero:</label>
             <input
-              type="text"
               value={mesero}
               onChange={(e) => setMesero(e.target.value)}
               style={inputStyle}
             />
-          </div>
+          </>
         )}
 
         {showCantidadPersonas && (
-          <div style={{ marginBottom: "10px" }}>
+          <>
             <label>Cantidad de Personas:</label>
             <input
               type="number"
               value={cantidadPersonas}
-              onChange={(e) =>
-                setCantidadPersonas(Number(e.target.value))
-              }
+              onChange={(e) => setCantidadPersonas(Number(e.target.value))}
               style={inputStyle}
             />
-          </div>
+          </>
         )}
 
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <button style={buttonStyle} onClick={onClose}>
+        {showEstado && (
+          <>
+            <label>Estado:</label>
+            <select
+              value={disponible ? "disponible" : "ocupada"}
+              onChange={(e) => setDisponible(e.target.value === "disponible")}
+              style={inputStyle}
+            >
+              <option value="disponible">Disponible</option>
+              <option value="ocupada">Ocupada</option>
+            </select>
+          </>
+        )}
+
+        {showOrdenes && (
+          <>
+            <h3>Órdenes</h3>
+
+            {ordenes.map((orden, index) => (
+              <OrdenCard
+                key={orden.id}
+                orden={orden}
+                onActualizar={(campo, valor) =>
+                  actualizarOrden(index, campo, valor)
+                }
+                onBorrar={() => borrarOrden(index)}
+              />
+            ))}
+
+            {showAgregarOrden && (
+              <button onClick={agregarOrden} style={buttonStyle}>
+                + Agregar Orden
+              </button>
+            )}
+          </>
+        )}
+
+        <div
+          style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}
+        >
+          <button onClick={onClose} style={buttonStyle}>
             Cancelar
           </button>
 
           {showGuardar && (
-            <button style={saveButtonStyle} onClick={handleGuardar}>
-              Guardar
+            <button onClick={guardarCambios} style={saveButtonStyle}>
+              Guardar Cambios
             </button>
           )}
         </div>

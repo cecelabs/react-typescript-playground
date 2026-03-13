@@ -73,9 +73,16 @@ export default function OrdenesPage() {
 
             {mostrarModalNuevaMesa && (
                 <NuevaMesaModal
+                    mesa={{
+                        id: Date.now(),
+                        numero: mesas.length + 1,
+                        mesero: "",
+                        cantidadPersonas: 0,
+                        disponible: true,
+                        ordenes: []
+                    }}
                     onClose={() => setMostrarModalNuevaMesa(false)}
-                    onSave={guardarNuevaMesa}
-                    siguienteNumero={mesas.length + 1}
+                    onSave={(mesa: Mesa) => setMesas([...mesas, mesa])}
                     showMesero={false}
                     showCantidadPersonas
                 />
