@@ -47,20 +47,6 @@ export default function CocinaPage() {
             >
                 <h1>Gestión de Mesas</h1>
 
-                <button
-                    onClick={() => setMostrarModalNuevaMesa(true)}
-                    style={{
-                        padding: "10px 15px",
-                        backgroundColor: "#28a745",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                    }}
-                >
-                    + Añadir Mesa
-                </button>
             </div>
 
             <div
@@ -118,6 +104,7 @@ export default function CocinaPage() {
                     showMesero={false}
                     showCantidadPersonas={false}
                     showEstado={false}
+                    showAgregarOrden={false}
                 />
             )}
         </div>

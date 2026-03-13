@@ -67,6 +67,7 @@ export default function OrdenesPage() {
                     onDelete={eliminarMesa}
                     onEdit={() => setMostrarEditar(true)}
                     showMesero={false}
+                    showDelete={false}
 
                 />
             )}
