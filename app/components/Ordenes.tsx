@@ -100,6 +100,8 @@ export default function OrdenesPage() {
                     }}
                     onSave={actualizarMesa}
                     isMeseroEditable={false}
+                    isCantidadEditable={false}
+                    isEstadoEditable={false}
                 />
             )}
         </div>
