@@ -1,80 +1,96 @@
 "use client";
 
-import React, { useState } from "react";
-import { Mesa, Orden, ESTADOS_ORDEN } from "@/src/common/domain/entities";
+import React, {useState} from "react";
+import {Mesa, Orden, ESTADOS_ORDEN} from "@/src/common/domain/entities";
 import OrdenCard from "@/app/components/OrdenCard";
 
 interface EditarMesaModalProps {
-  mesa: Mesa;
-  onClose: () => void;
-  onSave: (mesaActualizada: Mesa) => void;
+    mesa: Mesa;
+    onClose: () => void;
+    onSave: (mesaActualizada: Mesa) => void;
 
-  showMesero?: boolean;
-  showCantidadPersonas?: boolean;
-  showEstado?: boolean;
-  showOrdenes?: boolean;
-  showAgregarOrden?: boolean;
-  showGuardar?: boolean;
+    showMesero?: boolean;
+    showCantidadPersonas?: boolean;
+    showEstado?: boolean;
+    showOrdenes?: boolean;
+    showAgregarOrden?: boolean;
+    showGuardar?: boolean;
+
+    isMeseroEditable?: boolean;
+    isCantidadEditable?: boolean;
+    isEstadoEditable?: boolean;
+    isOrdenesEditable?: boolean;
 }
 
 export default function EditarMesaModal({
-  mesa,
-  onClose,
-  onSave,
+                                            mesa,
+                                            onClose,
+                                            onSave,
 
-  showMesero = true,
-  showCantidadPersonas = true,
-  showEstado = true,
-  showOrdenes = true,
-  showAgregarOrden = true,
-  showGuardar = true,
-}: EditarMesaModalProps) {
-  const [mesero, setMesero] = useState(mesa.mesero);
-  const [cantidadPersonas, setCantidadPersonas] = useState(mesa.cantidadPersonas);
-  const [disponible, setDisponible] = useState(mesa.disponible);
-  const [ordenes, setOrdenes] = useState<Orden[]>(mesa.ordenes);
+                                            showMesero = true,
+                                            showCantidadPersonas = true,
+                                            showEstado = true,
+                                            showOrdenes = true,
+                                            showAgregarOrden = true,
+                                            showGuardar = true,
 
-  const actualizarOrden = (
-    index: number,
-    campo: keyof Orden,
-    valor: string | number
-  ) => {
-    const nuevasOrdenes = [...ordenes];
-    nuevasOrdenes[index] = { ...nuevasOrdenes[index], [campo]: valor };
-    setOrdenes(nuevasOrdenes);
-  };
+                                            isMeseroEditable = true,
+                                            isCantidadEditable = true,
+                                            isEstadoEditable = true,
+                                            isOrdenesEditable = true,
+                                        }: EditarMesaModalProps) {
+    const [mesero, setMesero] = useState(mesa.mesero);
+    const [cantidadPersonas, setCantidadPersonas] = useState(mesa.cantidadPersonas);
+    const [disponible, setDisponible] = useState(mesa.disponible);
+    const [ordenes, setOrdenes] = useState<Orden[]>(mesa.ordenes);
 
-  const borrarOrden = (index: number) => {
-    const nuevasOrdenes = [...ordenes];
-    nuevasOrdenes.splice(index, 1);
-    setOrdenes(nuevasOrdenes);
-  };
+    const actualizarOrden = (
+        index: number,
+        campo: keyof Orden,
+        valor: string | number
+    ) => {
+        if (!isOrdenesEditable) return;
 
-  const agregarOrden = () => {
-    const nuevaOrden: Orden = {
-      id: Date.now(),
-      plato: "",
-      cantidad: 1,
-      estado: ESTADOS_ORDEN.PENDIENTE,
+        const nuevasOrdenes = [...ordenes];
+        nuevasOrdenes[index] = {...nuevasOrdenes[index], [campo]: valor};
+        setOrdenes(nuevasOrdenes);
     };
 
-    setOrdenes((prev) => [...prev, nuevaOrden]);
-  };
+    const borrarOrden = (index: number) => {
+        if (!isOrdenesEditable) return;
 
-  const guardarCambios = () => {
-    const mesaActualizada: Mesa = {
-      ...mesa,
-      mesero,
-      cantidadPersonas,
-      disponible,
-      ordenes,
+        const nuevasOrdenes = [...ordenes];
+        nuevasOrdenes.splice(index, 1);
+        setOrdenes(nuevasOrdenes);
     };
 
-    onSave(mesaActualizada);
-    onClose();
-  };
+    const agregarOrden = () => {
+        if (!isOrdenesEditable) return;
 
-  return (
+        const nuevaOrden: Orden = {
+            id: Date.now(),
+            plato: "",
+            cantidad: 1,
+            estado: ESTADOS_ORDEN.PENDIENTE,
+        };
+
+        setOrdenes((prev) => [...prev, nuevaOrden]);
+    };
+
+    const guardarCambios = () => {
+        const mesaActualizada: Mesa = {
+            ...mesa,
+            mesero,
+            cantidadPersonas,
+            disponible,
+            ordenes,
+        };
+
+        onSave(mesaActualizada);
+        onClose();
+    };
+
+    return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <h2>Editar Mesa #{mesa.numero}</h2>
@@ -86,6 +102,7 @@ export default function EditarMesaModal({
               value={mesero}
               onChange={(e) => setMesero(e.target.value)}
               style={inputStyle}
+              disabled={!isMeseroEditable} // 👈 clave
             />
           </>
         )}
@@ -98,6 +115,7 @@ export default function EditarMesaModal({
               value={cantidadPersonas}
               onChange={(e) => setCantidadPersonas(Number(e.target.value))}
               style={inputStyle}
+              disabled={!isCantidadEditable} // 👈 clave
             />
           </>
         )}
@@ -109,6 +127,7 @@ export default function EditarMesaModal({
               value={disponible ? "disponible" : "ocupada"}
               onChange={(e) => setDisponible(e.target.value === "disponible")}
               style={inputStyle}
+              disabled={!isEstadoEditable} // 👈 clave
             >
               <option value="disponible">Disponible</option>
               <option value="ocupada">Ocupada</option>
@@ -128,10 +147,11 @@ export default function EditarMesaModal({
                   actualizarOrden(index, campo, valor)
                 }
                 onBorrar={() => borrarOrden(index)}
+
               />
             ))}
 
-            {showAgregarOrden && (
+            {showAgregarOrden && isOrdenesEditable && (
               <button onClick={agregarOrden} style={buttonStyle}>
                 + Agregar Orden
               </button>
@@ -140,7 +160,11 @@ export default function EditarMesaModal({
         )}
 
         <div
-          style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "20px",
+          }}
         >
           <button onClick={onClose} style={buttonStyle}>
             Cancelar
@@ -175,6 +199,7 @@ const modalStyle: React.CSSProperties = {
     width: "500px",
     maxHeight: "90vh",
     overflowY: "auto",
+    marginTop: "80px",
 };
 
 const inputStyle: React.CSSProperties = {

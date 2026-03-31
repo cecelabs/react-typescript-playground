@@ -3,7 +3,6 @@
 import React, {useState} from "react";
 import MesaCard from "@/app/components/MesaCard";
 import MesaModal from "@/app/components/MesaModal";
-import NuevaMesaModal from "@/app/components/NuevaMesaModal";
 import EditarMesaModal from "@/app/components/EditarMesaModal";
 import {useMesas} from "@/src/common/application/mesas-store";
 import {Mesa} from "@/src/common/domain/entities";
@@ -97,7 +96,7 @@ export default function MesasPage() {
             )}
 
             {mostrarModalNuevaMesa && (
-                <NuevaMesaModal
+                <EditarMesaModal
                     mesa={{
                         id: Date.now(),
                         numero: mesas.length + 1,

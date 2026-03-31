@@ -49,7 +49,7 @@ const ActiveComponent = ({ activeComponent }) => {
     }
 
     return (
-        <div className="h-screen flex-1 overflow-y-auto">
+        <div className="pt-16 h-screen flex-1 overflow-y-auto">
             {ComponenteMostrar}
         </div>
     );

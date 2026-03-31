@@ -7,7 +7,6 @@ import OrdenModal from "@/app/components/OrdenesModal";
 import EditarMesaModal from "@/app/components/EditarMesaModal";
 import {useMesas} from "@/src/common/application/mesas-store";
 import {Mesa} from "@/src/common/domain/entities";
-import NuevaMesaModal from "@/app/components/NuevaMesaModal";
 
 export default function OrdenesPage() {
     const [mesaSeleccionada, setMesaSeleccionada] = useState<Mesa | null>(null);
@@ -55,25 +54,28 @@ export default function OrdenesPage() {
                     <MesaCard
                         key={mesa.id}
                         mesa={mesa}
-                        onClick={setMesaSeleccionada}
+                        onClick={(mesa) => {
+                            setMesaSeleccionada(mesa);
+                            setMostrarEditar(true);
+                        }}
                     />
                 ))}
             </div>
 
-            {mesaSeleccionada && (
-                <MesaModal
-                    mesa={mesaSeleccionada}
-                    onClose={() => setMesaSeleccionada(null)}
-                    onDelete={eliminarMesa}
-                    onEdit={() => setMostrarEditar(true)}
-                    showMesero={false}
-                    showDelete={false}
+            {/*{mesaSeleccionada && (*/}
+            {/*    <MesaModal*/}
+            {/*        mesa={mesaSeleccionada}*/}
+            {/*        onClose={() => setMesaSeleccionada(null)}*/}
+            {/*        onDelete={eliminarMesa}*/}
+            {/*        onEdit={() => setMostrarEditar(true)}*/}
+            {/*        showMesero={false}*/}
+            {/*        showDelete={false}*/}
 
-                />
-            )}
+            {/*    />*/}
+            {/*)}*/}
 
             {mostrarModalNuevaMesa && (
-                <NuevaMesaModal
+                <EditarMesaModal
                     mesa={{
                         id: Date.now(),
                         numero: mesas.length + 1,
@@ -92,8 +94,12 @@ export default function OrdenesPage() {
             {mostrarEditar && mesaSeleccionada && (
                 <EditarMesaModal
                     mesa={mesaSeleccionada}
-                    onClose={() => setMostrarEditar(false)}
+                    onClose={() => {
+                        setMostrarEditar(false);
+                        setMesaSeleccionada(null);
+                    }}
                     onSave={actualizarMesa}
+                    isMeseroEditable={false}
                 />
             )}
         </div>
