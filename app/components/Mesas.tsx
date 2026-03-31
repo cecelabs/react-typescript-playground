@@ -65,9 +65,7 @@ export default function MesasPage() {
                     + Añadir Mesa
                 </button>
             </div>
-            <div>
-                {numeroMesas}
-            </div>
+
             <div
                 style={{
                     display: "grid",

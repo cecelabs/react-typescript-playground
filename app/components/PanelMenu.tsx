@@ -4,11 +4,11 @@ import MenuButton from "@/app/components/MenuButton";
 const PanelMenu = ({activeComponent, setActiveComponent}) => {
 
     return (
-        <nav className="w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
+        <nav className="pt-16 w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
             <h3 className="text-xl font-bold text-white mb-4">Menu</h3>
             <div className="space-y-3">
                 <MenuButton
-                    label="View A"
+                    label="Vista Simple"
                     value="A"
                     activeComponent={activeComponent}
                     setActiveComponent={setActiveComponent}
@@ -24,7 +24,7 @@ const PanelMenu = ({activeComponent, setActiveComponent}) => {
                 />
 
                 <MenuButton
-                    label="Form"
+                    label="Formulario"
                     value="C"
                     activeComponent={activeComponent}
                     setActiveComponent={setActiveComponent}
@@ -32,7 +32,7 @@ const PanelMenu = ({activeComponent, setActiveComponent}) => {
                 />
 
                 <MenuButton
-                    label="Panel gestión salón"
+                    label="Gestión salón"
                     value="D"
                     activeComponent={activeComponent}
                     setActiveComponent={setActiveComponent}
@@ -40,7 +40,7 @@ const PanelMenu = ({activeComponent, setActiveComponent}) => {
                 />
 
                 <MenuButton
-                    label="Panel meser@s"
+                    label="Ordenes"
                     value="E"
                     activeComponent={activeComponent}
                     setActiveComponent={setActiveComponent}
@@ -48,7 +48,7 @@ const PanelMenu = ({activeComponent, setActiveComponent}) => {
                 />
 
                 <MenuButton
-                    label="Panel cocina/ordenes"
+                    label="Cocina"
                     value="F"
                     activeComponent={activeComponent}
                     setActiveComponent={setActiveComponent}
